@@ -1,0 +1,42 @@
+workflows:
+  lyrapay-android:
+    name: LyraPay Android
+    instance_type: mac_mini_m1
+    max_build_duration: 30
+    environment:
+      flutter: stable    # or exact: flutter: 3.22.0
+      xcode: latest
+      cocoapods: default
+      groups:
+        - lyrapay_env    # Add your env vars in Codemagic UI
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+    scripts:
+      - name: Clean and get dependencies
+        script: |
+          rm -f pubspec.lock
+          flutter pub get
+      - name: Analyze
+        script: flutter analyze
+      - name: Run tests
+        script: flutter test
+      - name: Build APK
+        script: |
+          flutter build apk --release \
+            --build-name=1.0.0 \
+            --build-number=1
+    artifacts:
+      - build/**/outputs/**/*.apk
+      - build/**/outputs/**/*.aab
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
