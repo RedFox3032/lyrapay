@@ -89,6 +89,9 @@ dev_dependencies:
   integration_test:
     sdk: flutter
 
+dependency_overrides:
+  intl: ^0.20.2
+
 flutter:
   uses-material-design: true
 
